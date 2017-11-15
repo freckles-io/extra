@@ -213,6 +213,9 @@ function command_add {
 
    echo "Added repositury '${repo_url}' (using alias '${upstream_alias}' at path: ${local_path}"
    echo "${role_name}=${local_path}" >> .role_repos
+
+   git add .role_repos
+   git commit -m "Added remote role repo '${repo_url}' (alias: ${upstream_alias})to path: ${local_path}"
 }
 
 
