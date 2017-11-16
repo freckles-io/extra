@@ -1,0 +1,19 @@
+doc:
+  short_help: "installs docker"
+  help: "installs docker using the 'geerlingguy.docker' Ansible role, check for details here: https://github.com/geerlingguy/ansible-role-docker"
+args:
+  docker_edition:
+     arg_name: edition
+     help: the edition of docker ('ce', 'ee', or 'docker-{{ docker_edition }}-<VERSION>'
+     metavar: EDITION
+     is_var: true
+     required: no
+     default: ce
+  docker_package_state:
+     arg_name: state
+     metavar: STATE
+     default: present
+     is_var: true
+     help: whether to install the 'latest' version, be content with 'present', or want docker to be 'absent'
+tasks:
+  - install-docker

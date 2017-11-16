@@ -1,0 +1,8 @@
+tasks:
+  - install-docker:
+      meta:
+        become: yes
+        task-desc: install docker
+        become: yes
+        task-type: ansible-role
+        task-name: geerlingguy.docker
