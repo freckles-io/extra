@@ -96,6 +96,47 @@ function fork_repo {
 # =============================================================
 # COMMANDS
 
+function command_push_upstream {
+
+    while getopts ":h" opt; do
+        case ${opt} in
+            h )
+                echo "Usage:"
+                echo "    repo-manage push-upstream -h              display this help message."
+                echo "    repo-manage push-upstream ROLE_NAME       pushes changes to upstream role repo."
+                exit 0
+                ;;
+            \? )
+                echo "Invalid Option: -$OPTARG" 1>&2
+                exit 1
+                ;;
+            : )
+                echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+                exit 1
+                ;;
+        esac
+    done
+
+    shift $((OPTIND -1))
+
+    if [[ "$#" -ne 1 ]]; then
+        echo ""
+        echo "Illegal number of arguments: exactly one ROLE_NAME allowed."
+        echo ""
+        exit 1
+    fi
+
+    # reading path to role
+    while read -r line; do declare  $line; done <".role_repos"
+
+    clean_string role_key "$1"
+    role_path=${!role_key}
+    role_name=$(basename ${role_path})
+
+    git subtree push --prefix "${role_path}" "${role_key}_upstream" master
+
+}
+
 function command_pull_upstream {
 
    while getopts ":h" opt; do
@@ -103,7 +144,7 @@ function command_pull_upstream {
      h )
       echo "Usage:"
       echo "    repo-manage pull-upstream -h              display this help message."
-      echo "    repo-manage pull-upstream ROLE_NAME       adds a remote repo."
+      echo "    repo-manage pull-upstream ROLE_NAME       pulls changes from upstream repo."
       exit 0
       ;;
      \? )
@@ -236,8 +277,11 @@ case "$subcommand" in
     command_add "$@"
     ;;
   pull-upstream)
-    command_pull_upstream "$@"
-    ;;
+      command_pull_upstream "$@"
+      ;;
+  push-upstream)
+      command_push_upstream "$@"
+      ;;
 esac
 
 #eval "command_$subcommand $repo_url"
