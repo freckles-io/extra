@@ -60,9 +60,7 @@ Added repositury 'https://github.com/geerlingguy/ansible-role-docker.git' (using
  create mode 100644 .role_repos
 ```
 
-
-
-#### Updating remote role
+#### Pulling changes from remote role
 
 ```
 ./repo-manage pull-upstream <role_name>
@@ -72,4 +70,18 @@ Added repositury 'https://github.com/geerlingguy/ansible-role-docker.git' (using
 
 ```
 ./repo-manage pull-upstream geerlingguy.docker
+```
+
+#### Pushing changes to upstream
+
+This obviously only works if you have write access to the upstream role (e.g. by using the '-f' flag when adding the role repo.)
+
+```
+./repo-manage push-upstream <role_name>
+```
+
+##### Example: pulling updates from the upstream `geerlingguy.docker` role
+
+```
+./repo-manage push-upstream geerlingguy.docker
 ```
