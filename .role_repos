@@ -1,1 +1,1 @@
-geerlingguy_docker=services/containers/docker/geerlingguy.docker
+geerlingguy_docker=roles/services/containers/docker/geerlingguy.docker
