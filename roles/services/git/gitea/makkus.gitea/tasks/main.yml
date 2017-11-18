@@ -1,2 +1,38 @@
 ---
 # tasks file for gitea_ansible
+
+- name: ensure gitea group exists
+  group:
+    name: "{{ gitea_group }}"
+    gid: "{{ gitea_gid | default(omit) }}"
+    state: present
+  become: true
+
+- name: ensure gitea user exists
+  user:
+    name: "{{ gitea_user }}"
+    uid: "{{ gitea_uid | default(omit) }}"
+    group: "{{ gitea_group }}"
+    state: present
+  become: true
+
+- name: install git
+  package:
+    name: git
+    state: present
+
+- name: ensure gitea dirs are created
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ gitea_user }}"
+    group: "{{ gitea_group }}"
+  become: true
+  with_items:
+    - "{{ gitea_dir }}"
+    - "{{ gitea_log_dir }}"
+
+- name: check gitea bin
+  stat:
+    path: "{{ gitea_dir }}/gitea"
+  register: gitea_bin

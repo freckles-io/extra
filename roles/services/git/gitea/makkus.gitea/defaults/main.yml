@@ -1,2 +1,10 @@
 ---
 # defaults file for gitea_ansible
+
+gitea_user: gitea
+#gitea_uid: 2000
+gitea_group: gitea
+#gitea_gid: 2000
+gitea_home: /home/gitea
+gitea_dir: /opt/gitea
+gitea_log_dir: /var/log/gitea
