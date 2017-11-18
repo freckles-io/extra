@@ -1,0 +1,17 @@
+doc:
+  help: installs gitea git repository
+  short_help: installs gitea
+role-dependencies:
+  - makkus.gitea
+# args:
+#   test_arg:
+#     arg_name: test-arg
+#     help: example help text for arg
+#     type: str  # (optional)
+#     multiple: false  # (optional)
+#     required: false  # (optional)
+#     default: default-string  # (optional)
+#     metavar: TEST_ARG  # (optional)
+#     is_flag: false  # (optional)
+#     is_var: true  # (optional)
+#     is_argument: false  # (optional)

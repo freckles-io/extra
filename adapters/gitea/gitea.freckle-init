@@ -1,0 +1,9 @@
+- name: debug profile init
+  debug: var=freckles_profile_folders
+
+- name: debug user vars
+  debug: var=freckles_user_vars
+
+- name: "[include makkus gitea group]"
+  include_role:
+    name: makkus.gitea
