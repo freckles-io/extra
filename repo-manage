@@ -158,6 +158,7 @@ function command_pull_upstream {
      esac
    done
 
+
    shift $((OPTIND -1))
 
    if [[ "$#" -ne 1 ]]; then
@@ -168,7 +169,12 @@ function command_pull_upstream {
    fi
 
    # reading path to role
-   while read -r line; do declare  $line; done <".role_repos"
+   while read -r line; do
+       if [[  -z "$line" ]]; then
+           continue
+       fi
+       declare "$line";
+   done <".role_repos"
 
    clean_string role_key "$1"
    role_path=${!role_key}
