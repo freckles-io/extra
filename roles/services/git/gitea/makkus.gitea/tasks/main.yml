@@ -13,6 +13,7 @@
     name: "{{ gitea_user }}"
     uid: "{{ gitea_uid | default(omit) }}"
     group: "{{ gitea_group }}"
+    home: "{{ gitea_home }}"
     state: present
   become: true
 
@@ -31,8 +32,49 @@
   with_items:
     - "{{ gitea_dir }}"
     - "{{ gitea_log_dir }}"
+    - "{{ gitea_working_dir }}"
 
 - name: check gitea bin
   stat:
     path: "{{ gitea_dir }}/gitea"
   register: gitea_bin
+
+- name: downloading gitea bin
+  get_url:
+    url: "{{ gitea_bin_url }}"
+    dest: "{{ gitea_dir }}/gitea"
+    owner: "{{ gitea_user }}"
+    group: "{{ gitea_group }}"
+    mode: 0755
+    checksum: "sha256: {{ lookup('url', gitea_sig_url).split(' ')[0] | default(omit) }}"
+  when: not gitea_bin.stat.exists or gitea_force_download
+  become: yes
+
+# - name: "[set systemd_service_name var in case this role gets included via include_role]" # otherwise handler breaks
+  # set_fact:
+    # systemd_service_name: gitea
+
+- name: creating systemd unit for gitea
+  include_role:
+    name: tumf.systemd-service
+  vars:
+    systemd_service_name: gitea
+    systemd_service_description: gitea git repository service
+    systemd_service_Unit_After:
+      - syslog.target
+      - network.target
+    systemd_service_Service_Type: simple
+    systemd_service_Service_User: "{{ gitea_user }}"
+    systemd_service_Service_Group: "{{ gitea_group }}"
+    systemd_service_Service_WorkingDirectory: "{{ gitea_working_dir }}"
+    systemd_service_Service_ExecStart: "{{ gitea_dir }}/gitea web -p {{ gitea_port }} -c {{ gitea_working_dir }}/{{ gitea_config_path }}"
+    systemd_service_Service_Restart: always
+    systemd_service_Service_Environment: "USER={{ gitea_username }} HOME={{ gitea_working_dir }}"
+  become: true
+
+- name: ensuring gitea service is enabled and started
+  service:
+    state: restarted
+    enabled: true
+    name: gitea
+  become: true

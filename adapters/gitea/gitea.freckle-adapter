@@ -3,6 +3,7 @@ doc:
   short_help: installs gitea
 role-dependencies:
   - makkus.gitea
+  - tumf.systemd-service
 # args:
 #   test_arg:
 #     arg_name: test-arg

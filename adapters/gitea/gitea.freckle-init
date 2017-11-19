@@ -1,9 +1,38 @@
+- name: debug global folder vars
+  debug: var=freckles_global_vars
+
 - name: debug profile init
   debug: var=freckles_profile_folders
 
 - name: debug user vars
   debug: var=freckles_user_vars
 
-- name: "[include makkus gitea group]"
+- name: "[check whether there is more than one freckle folders]"
+  fail:
+    msg: "More than one freckle folder detected, this is not supported for this adapter"
+  when: freckles_profile_folders | length > 1
+
+- name: "[assign freckle vars]"
+  set_fact:
+    gitea_freckle_path: "{{ item.key }}"
+    gitea_freckle_vars_raw: "{{ item.value }}"
+  with_dict: "{{ freckles_profile_folders }}"
+
+- name: "[assign freckle global vars]"
+  set_fact:
+    freckle_folder_vars: "{{ freckles_global_vars.get(gitea_freckle_path) }}"
+    gitea_freckle_vars: "{{ gitea_freckle_vars_raw.vars | flatten_vars_filter }}"
+
+- debug: var=gitea_freckle_path
+- debug: var=gitea_freckle_vars
+- debug: var=freckle_folder_vars
+
+- name: "[calculating gitea user, group and working dir]"
+  set_fact:
+    gitea_working_dir: "{{ gitea_freckle_vars.gitea_working_dir | mandatory }}"
+    gitea_group: "{{ freckle_folder_vars.freckle_group | default(omit) }}"
+    gitea_user: "{{ freckle_folder_vars.freckle_user }}"
+
+- name: "[include makkus.gitea role]"
   include_role:
     name: makkus.gitea

@@ -1,2 +1,7 @@
 ---
 # handlers file for gitea_ansible
+- name: restart gitea service
+  service:
+    name: gitea
+    state: restarted
+  become: true
