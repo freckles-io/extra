@@ -3,3 +3,4 @@ makkus_gitea=roles/services/git/gitea/makkus.gitea
 tumf_systemd_service=roles/system/init/systemd/tumf.systemd-service
 makkus_grav=roles/web/cms/grav/makkus.grav
 geerlingguy_nginx=roles/services/web/nginx/geerlingguy.nginx
+geerlingguy_php=roles/languages/php/geerlingguy.php
