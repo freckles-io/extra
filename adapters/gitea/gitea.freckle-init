@@ -30,8 +30,8 @@
 - name: "[calculating gitea user, group and working dir]"
   set_fact:
     gitea_working_dir: "{{ gitea_freckle_vars.gitea_working_dir | mandatory }}"
-    gitea_group: "{{ freckle_folder_vars.freckle_group | default(omit) }}"
-    gitea_user: "{{ freckle_folder_vars.freckle_user }}"
+    gitea_group: "{{ freckle_folder_vars.group | default(omit) }}"
+    gitea_user: "{{ freckle_folder_vars.owner }}"
 
 - name: "[include makkus.gitea role]"
   include_role:
