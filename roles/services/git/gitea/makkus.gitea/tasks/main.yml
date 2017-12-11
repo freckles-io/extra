@@ -21,6 +21,7 @@
   package:
     name: git
     state: present
+  become: true
 
 - name: ensure gitea dirs are created
   file:
