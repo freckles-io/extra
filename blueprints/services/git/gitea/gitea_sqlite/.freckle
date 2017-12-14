@@ -1,0 +1,9 @@
+- freckle:
+    owner: gitea
+    group: gitea
+    stow_root: /
+    staging_method: stow
+- gitea:
+    gitea_working_dir: /home/gitea
+    gitea_port: 8180
+

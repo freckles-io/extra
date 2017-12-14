@@ -1,0 +1,15 @@
+- freckle:
+   owner: mysql
+   group: mysql
+   staging_method: stow
+   stow_root: /
+- mysql:
+   mysql_root_password: geheim
+   mysql_root_password_update: no
+   mysql_databases:
+     - name: gitea
+   mysql_users:
+     - name: gitea
+       host: localhost
+       password: gitea
+       priv: "gitea.*:ALL"
