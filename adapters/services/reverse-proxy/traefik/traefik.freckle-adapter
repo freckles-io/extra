@@ -1,0 +1,5 @@
+doc:
+  help: install traefik reverse proxy and systemd unit
+  short_help: installs traefik reverse proxy
+role-dependencies:
+  - kibatic.traefik

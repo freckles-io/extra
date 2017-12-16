@@ -1,0 +1,20 @@
+- name: "[setting vars]"
+  set_fact:
+    traefik_user: "{{ freckle_folder_vars.owner }}"
+    traefik_template: "{{ freckle_path }}/{{ freckle_vars.traefik_config_file | default('traefik.toml') }}"
+    traefik_config_dir: "{{ freckle_path }}/config"
+    traefik_config_file: "{{ freckle_path }}/config/traefik.toml"
+
+- name: "create config dir"
+  file:
+    path: "{{ traefik_config_dir }}"
+    state: directory
+  become: yes
+  become_user: "{{ freckle_folder_vars.owner }}"
+
+
+- name: "[starting traekik role]"
+  include_role:
+    name: kibatic.traefik
+  become: yes
+  become_user: "{{ freckle_folder_vars.owner }}"
