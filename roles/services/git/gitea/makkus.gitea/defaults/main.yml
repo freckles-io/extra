@@ -11,7 +11,7 @@ gitea_log_dir: /var/log/gitea
 gitea_working_dir: "{{ gitea_home }}"
 gitea_config_path: "custom/conf/app.ini"
 gitea_port: 8180
-gitea_version: 1.2.3
+gitea_version: 1.3.2
 gitea_arch: amd64
 gitea_bin_url: "https://github.com/go-gitea/gitea/releases/download/v{{ gitea_version }}/gitea-{{ gitea_version }}-linux-{{ gitea_arch }}"
 gitea_sig_url: "{{ gitea_bin_url }}.sha256"
