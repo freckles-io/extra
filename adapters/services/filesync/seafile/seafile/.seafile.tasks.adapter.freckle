@@ -1,0 +1,132 @@
+- name: debug freckle path
+  debug: var=freckle_path
+
+- name: debug freckle_folder_vars
+  debug: var=freckle_folder_vars
+
+- name: debug freckle vars (raw)
+  debug: var=freckle_vars_raw
+
+- name: debug freckle vars
+  debug: var=freckle_vars
+
+- name: set seafile user
+  set_fact:
+    seafile_user: seafile
+    seafile_group: seafile
+
+- name: create seafile group
+  group:
+    name: "{{ seafile_group }}"
+
+- name: create seafile user
+  user:
+    name: "{{ seafile_user }}"
+    group: "{{ seafile_group }}"
+
+- name: create seafile dir
+  file:
+    path: /opt/seafile/installed
+    state: directory
+    recurse: true
+  become: true
+
+- name: setting seafile version
+  set_fact:
+     seafile_version: "6.2.3"
+
+- name: downloading seafile
+  get_url:
+    url: "https://download.seadrive.org/seafile-server_{{ seafile_version }}_x86-64.tar.gz"
+    validate_certs: no
+    dest: "/opt/seafile/installed/seafile-server_{{ seafile_version }}_x86-64.tar.gz"
+  register: target_path
+  become: true
+
+- name: extract downloaded file
+  unarchive:
+    src: "{{ target_path.dest }}"
+    dest: /opt/seafile
+    creates: "/opt/seafile/seafile-server-{{ seafile_version }}"
+  become: true
+
+- name: chown
+  file:
+    path: /opt/seafile
+    owner: seafile
+    group: seafile
+    recurse: true
+  become: true
+
+- name: install dependencies
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - python
+    - python2.7
+    - libpython2.7
+    - python-setuptools
+    - python-imaging
+    - python-ldap
+    - python-urllib3
+    - ffmpeg
+    - python-pip
+    - python-memcache
+  become: true
+
+- name: install sqlite dependencies
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - sqlite3
+  become: true
+
+- name: install mysql dependencies
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - python-mysqldb
+  become: true
+
+- name: run setupscript
+  command: "/opt/seafile/seafile-server-{{ seafile_version }}/setup-seafile.sh auto -n testserver -i 0.0.0.0 -p 8082"
+  args:
+    chdir: "/opt/seafile/seafile-server-{{ seafile_version }}"
+    creates: /opt/seafile/seafile-data
+  become: true
+  become_user: seafile
+
+- name: create seafile systemd service file
+  include_role:
+    name: tumf.systemd-service
+  vars:
+    systemd_service_name: seafile
+    systemd_service_description: seafile service
+    systemd_service_Unit_After:
+      - network.target
+    systemd_service_Service_Type: oneshot
+    systemd_service_Service_User: "{{ seafile_user }}"
+    systemd_service_Service_Group: "{{ seafile_group }}"
+    systemd_service_Service_ExecStart: "/opt/seafile/seafile-server-latest/seafile.sh start"
+    systemd_service_Service_ExecStop: "/opt/seafile/seafile-server-latest/seafile.sh stop"
+    systemd_service_Service_RemainAfterExit: yes
+    systemd_service_Install_WantedBy: multi-user.target
+  become: true
+
+- name: create seahub systemd service file
+  include_role:
+    name: tumf.systemd-service
+  vars:
+    systemd_service_name: seahub
+    systemd_service_description: seafile service
+    systemd_service_Unit_After:
+      - network.target
+      - seafile.service
+    systemd_service_Service_Type: oneshot
+    systemd_service_Service_User: "{{ seafile_user }}"
+    systemd_service_Service_Group: "{{ seafile_group }}"
+    systemd_service_Service_ExecStart: "/opt/seafile/seafile-server-latest/seahub.sh start"
+    systemd_service_Service_ExecStop: "/opt/seafile/seafile-server-latest/seahub.sh stop"
+    systemd_service_Service_RemainAfterExit: yes
+    systemd_service_Install_WantedBy: multi-user.target
+  become: true
