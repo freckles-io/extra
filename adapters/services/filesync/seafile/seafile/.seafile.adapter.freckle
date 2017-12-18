@@ -5,6 +5,8 @@ doc:
   short_help: adapter-stub, please fill in the fields as approriate
 role-dependencies:
   - tumf.systemd-service
+  - geerlingguy.nginx
+priority: 1000
 #   - ...
 # args:
 #   test_arg:
