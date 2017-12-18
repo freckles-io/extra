@@ -161,7 +161,7 @@
   when: seafile_backend == 'sqlite'
 
 - name: running setupscript (for mysql backend)
-  shell: "{{ seafile_dir }}/seafile-server-{{ seafile_version }}/setup-seafile-mysql.sh auto -n {{ seafile_server_name }} -i {{ seafile_domain }} -p {{ seafile_fileserver_port }} -e 1 -o 127.0.0.1 -u seafile -w {{ seafile_db_password }} -q 127.0.0.1 -c ccnet-db -s seafile-db -b seahub-db"
+  shell: "{{ seafile_dir }}/seafile-server-{{ seafile_version }}/setup-seafile-mysql.sh auto -n {{ seafile_server_name }} -i {{ seafile_domain }} -p {{ seafile_fileserver_port }} -e 1 -o 127.0.0.1 -u seafile -w '{{ seafile_db_password }}' -q 127.0.0.1 -c ccnet-db -s seafile-db -b seahub-db"
   args:
     chdir: "{{ seafile_dir }}/seafile-server-{{ seafile_version }}"
     executable: /bin/bash
