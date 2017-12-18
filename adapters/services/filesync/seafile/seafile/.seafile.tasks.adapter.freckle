@@ -18,17 +18,17 @@
 - name: "[setting external url]"
   set_fact:
     seafile_external_url: "http://{{ seafile_domain }}"
-  when: seafile_port != 443
+  when: seafile_port != '443'
 
 - name: "[setting external url:port]"
   set_fact:
     seafile_external_url: "{{ seafile_external_url }}:{{ seafile_port }}"
-  when: seafile_port != 443 and seafile_port != 80
+  when: seafile_port != '443' and seafile_port != '80'
 
 - name: "[setting external url (https)"
   set_fact:
     seafile_external_url: "https://{{ seafile_external_url }}"
-  when: seafile_port == 443
+  when: seafile_port == '443'
 
 - name: "[fail if unsupported backend]"
   fail: msg="Backend '{{ seafile_backend }}' not supported. Only 'sqlite' and 'mysql' allowed."
