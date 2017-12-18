@@ -4,4 +4,3 @@
   fail:
     msg: "More than one freckle folder detected, this is not supported for this adapter"
   when: freckles_profile_folders | length > 1
-
