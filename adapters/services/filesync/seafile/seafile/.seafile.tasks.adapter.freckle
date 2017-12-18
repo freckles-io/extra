@@ -41,6 +41,7 @@
 - name: "[setting vars apt]"
   set_fact:
     dependencies:
+      - sudo
       - python
       - python2.7
       - libpython2.7
@@ -56,6 +57,7 @@
 - name: "[setting vars yum]"
   set_fact:
     dependencies:
+      - sudo
       - python-imaging
       - MySQL-python
       - python-memcached
