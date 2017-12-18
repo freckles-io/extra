@@ -1,16 +1,4 @@
-- name: "debug 'freckles_profile_name'"
-  debug: var=freckles_profile_name
-
-- name: "debug 'freckles_global_vars'"
-  debug: var=freckles_global_vars
-
-- name: "debug 'freckles_profile_folders'"
-  debug: var=freckles_profile_folders
-
-- name: "debug 'freckle_profile'"
-  debug: var=freckle_profile
-
-- name: "debug 'freckle_global_folder_vars'"
-  debug: var=freckle_global_folder_vars
-
-
+- name: "[check whether there is more than one freckle folders]"
+  fail:
+    msg: "More than one freckle folder detected, this is not supported for this adapter"
+  when: freckles_profile_folders | length > 1
