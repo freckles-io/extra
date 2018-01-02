@@ -6,7 +6,7 @@
     seafile_version: "{{ freckle_folder_vars.seafile_version | default('6.2.3') }}"
     seafile_server_name: "{{ freckle_folder_vars.seafile_server_name | default('Seafile') }}"
     seafile_domain: "{{ freckle_folder_vars.seafile_domain | default('localhost') }}"
-    seafile_port: "{{ freckle_folder_vars.seafile_external_port | default(8000) }}"
+    seafile_service_port: "{{ freckle_folder_vars.seafile_external_port | default(8000) }}"
     seafile_fileserver_port: "{{ freckle_folder_vars.seafile_fileserver_port | default(8082) }}"
     seafile_backend: "{{ freckle_folder_vars.seafile_backend | default('sqlite') }}"
     seafile_ulimit: "{{ freckle_folder_vars.seafile_ulimit | default(30000) }}"
@@ -15,20 +15,25 @@
     seafile_db_password: "{{ freckle_folder_vars.seafile_db_password | default(omit) }}"
     seafile_disable_webdav: "{{ freckle_folder_vars.seafile_disable_webdav | default(false) }}"
 
+- name: "[set webserver port to service port if no webserver]"
+  set_fact:
+    seafile_webserver_port: "{{ seafile_service_port }}"
+  when: seafile_webserver == 'none'
+
 - name: "[setting external url]"
   set_fact:
     seafile_external_url: "http://{{ seafile_domain }}"
-  when: seafile_port != '443'
+  when: seafile_webserver_port != '443'
 
 - name: "[setting external url:port]"
   set_fact:
     seafile_external_url: "{{ seafile_external_url }}:{{ seafile_port }}"
-  when: seafile_port != '443' and seafile_port != '80'
+  when: seafile_webserver_port != '443' and seafile_webserver_port != '80'
 
 - name: "[setting external url (https)]"
   set_fact:
     seafile_external_url: "https://{{ seafile_domain }}"
-  when: seafile_port == '443'
+  when: seafile_webserver_port == '443'
 
 - name: "[fail if unsupported backend]"
   fail: msg="Backend '{{ seafile_backend }}' not supported. Only 'sqlite' and 'mysql' allowed."
@@ -320,7 +325,7 @@
         extra_parameters: |
           proxy_set_header X-Forwarded-For $remote_addr;
           location / {
-            proxy_pass         http://127.0.0.1:8000;
+            proxy_pass         http://127.0.0.1:{{ seafile_service_port }};
             proxy_set_header   Host $http_host;
             proxy_set_header   X-Real-IP $remote_addr;
             proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
