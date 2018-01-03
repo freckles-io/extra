@@ -314,6 +314,13 @@
   become: true
 
 
+# request https cert
+# ------------------------------------------------
+
+- name: "managing https certificate for {{ seafile_domain }}"
+  include_role:
+    name: thefinn93.letsencrypt
+
 # ------------------------------------------------
 # webserver
 - name: "[setting webserver vars]"
