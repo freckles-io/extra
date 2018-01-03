@@ -6,6 +6,7 @@ doc:
 role-dependencies:
   - tumf.systemd-service
   - geerlingguy.nginx
+  - thefinn93.letsencrypt
 priority: 1000
 #   - ...
 # args:

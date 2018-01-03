@@ -14,6 +14,15 @@
     seafile_webserver_port: "{{ freckle_folder_vars.seafile_webserver_port | default(80) }}"
     seafile_db_password: "{{ freckle_folder_vars.seafile_db_password | default(omit) }}"
     seafile_disable_webdav: "{{ freckle_folder_vars.seafile_disable_webdav | default(false) }}"
+    seafile_admin_email: "{{ freckle_folder_vars.seafile_admin_email | mandatory }}"
+    request_https_cert: "{{ freckle_folder_vars.request_https_cert | default(false) }}"
+
+- name: "[setting letsencrypt email]"
+  set_fact:
+    letsencrypt_email: "{{ freckle_folder_vars.letsencrypt_email | default(seafile_admin_email) }}"
+    letsencrypt_cert_domains:
+      - "{{ seafile_domain }}"
+  when: request_https_cert
 
 - name: "[set webserver port to service port if no webserver]"
   set_fact:
@@ -320,6 +329,10 @@
 - name: "managing https certificate for {{ seafile_domain }}"
   include_role:
     name: thefinn93.letsencrypt
+  vars:
+    letsencrypt_webroot_path: /var/www/html
+    letsencrypt_renewal_command_args: '--renew-hook "systemctl restart nginx"'
+  when: request_https_cert
 
 # ------------------------------------------------
 # webserver
