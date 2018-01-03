@@ -26,8 +26,8 @@
 
 - name: "[setting https port]"
   set_fact:
-    seafile_webserver_port: 443
-  when: seafile_webserver_port == 80 and request_https_cert
+    seafile_webserver_port: '443'
+  when: seafile_webserver_port == '80' and request_https_cert
 
 - name: "[set webserver port to service port if no webserver]"
   set_fact:
@@ -357,7 +357,8 @@
 
 - name: setting https nginx options
   set_fact:
-    nginx_https_options: |
+    nginx_https_options_1: "ssl http2"
+    nginx_https_options_2: |
       ssl_certificate      /etc/letsencrypt/live/{{ seafile_domain }}/fullchain.pem;
       ssl_certificate_key  /etc/letsencrypt/live/{{ seafile_domain }}/privkey.pem;
       ssl_protocols        TLSv1.1 TLSv1.2;
@@ -366,7 +367,8 @@
 
 - name: setting empty https nginx options
   set_fact:
-    nginx_https_options: ""
+    nginx_https_options_1: ""
+    nginx_https_options_2: ""
   when: not request_https_cert
 
 # ------------------------------------------------
@@ -375,7 +377,7 @@
   set_fact:
     nginx_remove_default_vhost: true
     nginx_vhosts:
-      - listen: "{{ seafile_webserver_port }}"
+      - listen: "{{ seafile_webserver_port }} {{ nginx_https_options_1 }}"
         server_name: "{{ seafile_domain }}"
         extra_parameters: |
           proxy_set_header X-Forwarded-For $remote_addr;
