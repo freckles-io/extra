@@ -371,6 +371,15 @@
     nginx_https_options_2: ""
   when: not request_https_cert
 
+- name: adding http -> https redirect
+  set_fact:
+    nginx_vhost_http:
+      - listen: "80"
+        server_name: "{{ seafile_domain }}"
+        return: "301 https://{{ seafile_domain }}$request_uri"
+        filename: "{{ seafile_domain }}.80.conf"
+  when: request_https_cert
+
 # ------------------------------------------------
 # webserver
 - name: "[setting webserver vars]"
@@ -416,8 +425,12 @@
           {{ nginx_webdav_location }}
 
           {{ nginx_https_options_2 }}
-
   when: seafile_webserver == 'nginx'
+
+- name: "[adding http -> https redirect if necessary]"
+  set_fact:
+    nginx_vhosts: "{{ nginx_vhost_http }} + {{ nginx_vhosts }}"
+  when: request_https_cert
 
 - name: installing and configuring nginx
   include_role:
