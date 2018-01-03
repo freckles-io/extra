@@ -24,6 +24,11 @@
       - "{{ seafile_domain }}"
   when: request_https_cert
 
+- name: "[setting https port]"
+  set_fact:
+    seafile_webserver_port: 443
+  when: seafile_webserver_port == 80 and request_https_cert
+
 - name: "[set webserver port to service port if no webserver]"
   set_fact:
     seafile_webserver_port: "{{ seafile_seahub_port }}"
@@ -350,6 +355,20 @@
   failed_when: "unused_disable|failed and ('find' not in unused_disable.msg and 'found' not in unused_disable.msg)"
   when: request_https_cert
 
+- name: setting https nginx options
+  set_fact:
+    nginx_https_options: |
+      ssl_certificate      /etc/letsencrypt/live/{{:: hostname ::}}/fullchain.pem;
+      ssl_certificate_key  /etc/letsencrypt/live/{{:: hostname ::}}/privkey.pem;
+      ssl_protocols        TLSv1.1 TLSv1.2;
+      ssl_ciphers          HIGH:!aNULL:!MD5;
+  when: request_https_cert
+
+- name: setting empty https nginx options
+  set_fact:
+    nginx_https_options: ""
+  when: not request_https_options
+
 # ------------------------------------------------
 # webserver
 - name: "[setting webserver vars]"
@@ -393,6 +412,8 @@
           }
 
           {{ nginx_webdav_location }}
+
+          {{ nginx_https_options }}
 
   when: seafile_webserver == 'nginx'
 
