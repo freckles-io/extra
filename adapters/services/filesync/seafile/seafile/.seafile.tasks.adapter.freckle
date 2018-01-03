@@ -358,8 +358,8 @@
 - name: setting https nginx options
   set_fact:
     nginx_https_options: |
-      ssl_certificate      /etc/letsencrypt/live/{{:: hostname ::}}/fullchain.pem;
-      ssl_certificate_key  /etc/letsencrypt/live/{{:: hostname ::}}/privkey.pem;
+      ssl_certificate      /etc/letsencrypt/live/{{ seafile_domain }}/fullchain.pem;
+      ssl_certificate_key  /etc/letsencrypt/live/{{ seafile_domain }}/privkey.pem;
       ssl_protocols        TLSv1.1 TLSv1.2;
       ssl_ciphers          HIGH:!aNULL:!MD5;
   when: request_https_cert
