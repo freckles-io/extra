@@ -7,7 +7,7 @@
     # letsencrypt_email: something@other.org    ## OPTIONAL, uses admin email if not set
     seafile_server_name: My_Seafile # 3-15 characters, only English letters, digits and underscore ('_') are allowed
     seafile_domain: "127.0.0.1"                 ## ip address or domain name used by this server
-    request_https_cert: false
+    request_https_cert: false                   ## requests letsencrypt https cert, make sure you've setup dns before you enable this
     seafile_backend: mysql
     seafile_db_password: seafile_db_pass
     # seafile_version: 6.2.3

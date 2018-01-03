@@ -367,7 +367,7 @@
 - name: setting empty https nginx options
   set_fact:
     nginx_https_options: ""
-  when: not request_https_options
+  when: not request_https_cert
 
 # ------------------------------------------------
 # webserver
