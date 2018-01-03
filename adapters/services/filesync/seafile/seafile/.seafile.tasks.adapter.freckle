@@ -57,6 +57,10 @@
   fail: msg="webserver '{{ seafile_webserver }}' not supported. Only 'none' and 'nginx' allowed."
   when: seafile_webserver != 'none' and seafile_webserver != 'nginx'
 
+- name: "[fail if no webserver but https cert]"
+  fail: msg="can't use option 'request_https_cert' when using no webserver."
+  when: request_https_cert and seafile_webserver == 'none'
+
 - name: "[setting vars apt]"
   set_fact:
     dependencies:
