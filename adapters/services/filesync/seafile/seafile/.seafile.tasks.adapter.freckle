@@ -415,7 +415,7 @@
 
           {{ nginx_webdav_location }}
 
-          {{ nginx_https_options }}
+          {{ nginx_https_options_2 }}
 
   when: seafile_webserver == 'nginx'
 
