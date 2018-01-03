@@ -170,7 +170,7 @@
 
 - name: "[creating admin.txt file, in case it doesn't exist yet]"
   copy:
-    content="{\"email\"\: \"{{ seafile_admin_email }}\", \"password\"\: \"change_me\"}"
+    content="{\"email\"{{ ":" }} \"{{ seafile_admin_email }}\", \"password\"{{ ":" }} \"change_me\"}"
     dest="{{ seafile_dir }}/conf/admin.txt"
 
 - name: running setupscript (for sqlite backend)
